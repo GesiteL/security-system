@@ -4,7 +4,7 @@
 
 ## 实跑验证（2026-11-19）
 
-- Java 21.0.8 + Maven 3.9.11 + MySQL 9.4，D 本机实测
+- Java 21.0.8 + Maven 3.9.11 + MySQL 9.4，本机实测
 - `Started SecuritySystemApplication in 7.566 seconds`，端口 8080
 - `POST /api/v1/auth/login`（account=admin / password=admin）→ 200，返回 JWT（156 字符）
 - 携带 JWT 访问 `GET /api/v1/users` / `/roles` / `/functions` → 全部 200（审计切面日志佐证）

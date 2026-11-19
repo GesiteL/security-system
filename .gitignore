@@ -2,3 +2,9 @@ target/
 web/node_modules/
 web/dist/
 *.log
+.idea/
+.vscode/
+*.iml
+.DS_Store
+.env
+.env.local
