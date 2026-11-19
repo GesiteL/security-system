@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tftc.lch.security.domain.permission.SysFunctionRepository">
+  <resultMap id="funcMap" type="tftc.lch.security.domain.permission.SysFunction">
+    <id property="id" column="id"/>
+    <result property="functionName" column="function_name"/>
+    <result property="description" column="description"/>
+    <result property="module" column="module"/>
+    <result property="isDeleted" column="is_deleted"/>
+    <result property="deletedToken" column="deleted_token"/>
+    <result property="planEffectiveAt" column="plan_effective_at"/>
+    <result property="planExpiredAt" column="plan_expired_at"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+  </resultMap>
+  <select id="findById" resultMap="funcMap">SELECT * FROM sys_function WHERE id=#{functionId} AND is_deleted=0</select>
+  <select id="findAll" resultMap="funcMap">
+    SELECT * FROM sys_function WHERE is_deleted=0
+    <if test="nameKeyword!=null and nameKeyword!=''">AND function_name LIKE CONCAT('%',#{nameKeyword},'%')</if>
+    <if test="module!=null and module!=''">AND module LIKE CONCAT('%',#{module},'%')</if>
+    ORDER BY id
+  </select>
+  <select id="countAll" resultType="int">
+    SELECT COUNT(*) FROM sys_function WHERE is_deleted=0
+    <if test="nameKeyword!=null and nameKeyword!=''">AND function_name LIKE CONCAT('%',#{nameKeyword},'%')</if>
+    <if test="module!=null and module!=''">AND module LIKE CONCAT('%',#{module},'%')</if>
+  </select>
+  <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sys_function(function_name,description,module,is_deleted,deleted_token,plan_effective_at,plan_expired_at,created_at,updated_at)
+    VALUES(#{functionName},#{description},#{module},#{isDeleted},#{deletedToken},#{planEffectiveAt},#{planExpiredAt},NOW(),NOW())
+  </insert>
+  <update id="update">
+    UPDATE sys_function SET function_name=#{functionName},description=#{description},module=#{module},is_deleted=#{isDeleted},deleted_token=#{deletedToken},updated_at=NOW() WHERE id=#{id}
+  </update>
+  <select id="existsByName" resultType="boolean">SELECT COUNT(*)>0 FROM sys_function WHERE function_name=#{functionName} AND is_deleted=0</select>
+  <select id="existsByNameExcludeId" resultType="boolean">SELECT COUNT(*)>0 FROM sys_function WHERE function_name=#{functionName} AND id!=#{excludeId} AND is_deleted=0</select>
+</mapper>

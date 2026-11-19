@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tftc.lch.security.domain.user.UserRoleRepository">
+  <resultMap id="urMap" type="tftc.lch.security.domain.user.UserRole">
+    <id property="id" column="id"/>
+    <result property="userId" column="user_id"/>
+    <result property="roleId" column="role_id"/>
+    <result property="planEffectiveAt" column="plan_effective_at"/>
+    <result property="planExpiredAt" column="plan_expired_at"/>
+    <result property="isDeleted" column="is_deleted"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+  </resultMap>
+  <select id="findById" resultMap="urMap">
+    SELECT * FROM user_role WHERE id=#{userRoleId}
+  </select>
+  <select id="findByConditions" resultMap="urMap">
+    SELECT ur.* FROM user_role ur JOIN user u ON u.id=ur.user_id
+    WHERE ur.is_deleted=0
+    <if test="userId!=0">AND ur.user_id=#{userId}</if>
+    <if test="displayName!=null and displayName!=''">AND u.display_name LIKE CONCAT('%',#{displayName},'%')</if>
+    <if test="phone!=null and phone!=''">AND u.phone LIKE CONCAT('%',#{phone},'%')</if>
+    <if test="email!=null and email!=''">AND u.email LIKE CONCAT('%',#{email},'%')</if>
+    ORDER BY ur.id LIMIT #{pageSize} OFFSET #{page}
+  </select>
+  <select id="countByConditions" resultType="int">
+    SELECT COUNT(*) FROM user_role ur JOIN user u ON u.id=ur.user_id WHERE ur.is_deleted=0
+    <if test="userId!=0">AND ur.user_id=#{userId}</if>
+  </select>
+  <select id="existsByUserIdAndRoleId" resultType="boolean">
+    SELECT COUNT(*)>0 FROM user_role WHERE user_id=#{userId} AND role_id=#{roleId} AND is_deleted=0
+  </select>
+  <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO user_role(user_id,role_id,plan_effective_at,plan_expired_at,is_deleted,created_at,updated_at)
+    VALUES(#{userId},#{roleId},#{planEffectiveAt},#{planExpiredAt},#{isDeleted},NOW(),NOW())
+  </insert>
+  <update id="update">
+    UPDATE user_role SET plan_effective_at=#{planEffectiveAt},plan_expired_at=#{planExpiredAt},is_deleted=#{isDeleted},updated_at=NOW() WHERE id=#{id}
+  </update>
+</mapper>

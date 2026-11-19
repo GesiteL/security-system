@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tftc.lch.security.domain.user.UserRepository">
+  <resultMap id="userMap" type="tftc.lch.security.domain.user.User">
+    <id property="id" column="id"/>
+    <result property="account" column="username"/>
+    <result property="passwordHash" column="password_hash"/>
+    <result property="realName" column="display_name"/>
+    <result property="phone" column="phone"/>
+    <result property="email" column="email"/>
+    <result property="status" column="status"/>
+    <result property="credentialsVersion" column="credentials_version"/>
+    <result property="isDeleted" column="is_deleted"/>
+    <result property="deletedToken" column="deleted_token"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+  </resultMap>
+  <select id="findById" resultMap="userMap">SELECT * FROM user WHERE id=#{id} AND is_deleted=0</select>
+  <select id="findByAccount" resultMap="userMap">SELECT * FROM user WHERE username=#{username} AND is_deleted=0</select>
+  <select id="findByPhone" resultMap="userMap">SELECT * FROM user WHERE phone=#{phone} AND is_deleted=0</select>
+  <select id="findByEmail" resultMap="userMap">SELECT * FROM user WHERE email=#{email} AND is_deleted=0</select>
+  <select id="findAll" resultMap="userMap">
+    SELECT * FROM user WHERE is_deleted=0
+    <if test="usernameKeyword!=null and usernameKeyword!=''">AND (username LIKE CONCAT('%',#{usernameKeyword},'%') OR display_name LIKE CONCAT('%',#{displayNameKeyword},'%') OR phone LIKE CONCAT('%',#{phoneKeyword},'%'))</if>
+    <if test="status!=null">AND status=#{status}</if>
+    ORDER BY created_at DESC LIMIT #{pageSize} OFFSET #{page}
+  </select>
+  <select id="countAll" resultType="int">
+    SELECT COUNT(*) FROM user WHERE is_deleted=0
+    <if test="usernameKeyword!=null and usernameKeyword!=''">AND (username LIKE CONCAT('%',#{usernameKeyword},'%') OR display_name LIKE CONCAT('%',#{displayNameKeyword},'%') OR phone LIKE CONCAT('%',#{phoneKeyword},'%'))</if>
+    <if test="status!=null">AND status=#{status}</if>
+  </select>
+  <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO user(username,password_hash,display_name,phone,email,status,credentials_version,is_deleted,deleted_token,created_at,updated_at)
+    VALUES(#{account},#{passwordHash},#{realName},#{phone},#{email},#{status},#{credentialsVersion},#{isDeleted},#{deletedToken},NOW(),NOW())
+  </insert>
+  <update id="update">
+    UPDATE user SET display_name=#{realName}, phone=#{phone}, email=#{email}, status=#{status}, credentials_version=#{credentialsVersion}, is_deleted=#{isDeleted}, deleted_token=#{deletedToken}, updated_at=NOW() WHERE id=#{id}
+  </update>
+  <select id="existsByAccount" resultType="boolean">SELECT COUNT(*)>0 FROM user WHERE username=#{username} AND is_deleted=0</select>
+  <select id="existsByPhone" resultType="boolean">SELECT COUNT(*)>0 FROM user WHERE phone=#{phone} AND id!=#{excludeId} AND is_deleted=0</select>
+</mapper>

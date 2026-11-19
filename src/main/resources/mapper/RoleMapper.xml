@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tftc.lch.security.domain.role.RoleRepository">
+  <resultMap id="roleMap" type="tftc.lch.security.domain.role.Role">
+    <id property="id" column="id"/>
+    <result property="roleName" column="role_name"/>
+    <result property="description" column="description"/>
+    <result property="isDeleted" column="is_deleted"/>
+    <result property="createdAt" column="created_at"/>
+    <result property="updatedAt" column="updated_at"/>
+  </resultMap>
+  <select id="findById" resultMap="roleMap">SELECT * FROM role WHERE id=#{id} AND is_deleted=0</select>
+  <select id="findByName" resultMap="roleMap">SELECT * FROM role WHERE role_name=#{name} AND is_deleted=0</select>
+  <select id="findAll" resultMap="roleMap">
+    SELECT * FROM role WHERE is_deleted=0
+    <if test="nameKeyword!=null and nameKeyword!=''">AND role_name LIKE CONCAT('%',#{nameKeyword},'%')</if>
+    ORDER BY id
+  </select>
+  <select id="countAll" resultType="int">
+    SELECT COUNT(*) FROM role WHERE is_deleted=0
+    <if test="nameKeyword!=null and nameKeyword!=''">AND role_name LIKE CONCAT('%',#{nameKeyword},'%')</if>
+  </select>
+  <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO role(role_name,description,is_deleted,created_at,updated_at)
+    VALUES(#{roleName},#{description},#{isDeleted},NOW(),NOW())
+  </insert>
+  <select id="existsByName" resultType="boolean">SELECT COUNT(*)>0 FROM role WHERE role_name=#{name} AND is_deleted=0</select>
+  <update id="update">UPDATE role SET role_name=#{roleName},description=#{description},updated_at=NOW() WHERE id=#{id}</update>
+</mapper>
