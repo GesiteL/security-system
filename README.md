@@ -1,5 +1,7 @@
 # 信息安全管理系统（Spring Boot 后端）
 
+> 基于 Spring Boot 的 RBAC 权限管理系统，含 JWT 登录、角色/功能/用户管理与操作审计；附带最小 Vue3 管理端。技术栈：Java 21 + Spring Boot 3.5 + MyBatis + MySQL + Vue 3 + Element Plus。演示账号：admin / admin。
+
 > 课堂作业改造作品。本系统原设计为 AI Agent 驱动交互（管理员以自然语言下达指令、由 Agent 转译为 API 调用），课堂阶段未交付 Web 前端；本作品仓库含完整后端，最小 Vue3 管理端为改造新增（见下文「管理端」节）。
 
 ## 实跑验证（2026-11-19）
