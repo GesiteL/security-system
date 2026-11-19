@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import tftc.lch.security.application.accesscontrol.AccessControlApplicationService;
+import tftc.lch.security.domain.audit.AuditLogRepository;
+import tftc.lch.security.domain.user.UserRepository;
 import tftc.lch.security.infrastructure.annotation.RequirePermission;
 import tftc.lch.security.infrastructure.aspect.AuditAspect;
 
@@ -19,7 +21,9 @@ import static org.mockito.Mockito.*;
 class AuditAspectTest {
 
     AccessControlApplicationService accessControl = mock(AccessControlApplicationService.class);
-    AuditAspect aspect = new AuditAspect(accessControl);
+    AuditLogRepository auditLogRepository = mock(AuditLogRepository.class);
+    UserRepository userRepository = mock(UserRepository.class);
+    AuditAspect aspect = new AuditAspect(accessControl, auditLogRepository, userRepository);
     ProceedingJoinPoint pjp = mock(ProceedingJoinPoint.class);
     Signature signature = mock(Signature.class);
     HttpServletRequest request = mock(HttpServletRequest.class);

@@ -8,7 +8,7 @@
 - `Started SecuritySystemApplication in 7.566 seconds`，端口 8080
 - `POST /api/v1/auth/login`（account=admin / password=admin）→ 200，返回 JWT（156 字符）
 - 携带 JWT 访问 `GET /api/v1/users` / `/roles` / `/functions` → 全部 200（审计切面日志佐证）
-- 构建产物：security-system-1.0.0-SNAPSHOT.jar（36,074,348 B）
+- 构建产物：security-system-1.0.0-SNAPSHOT.jar（36,844,787 B，同源打包管理端后的当前构建）
 
 ## 系统规模（代码级重数）
 
@@ -16,7 +16,7 @@
 - 业务 Controller 6 个：Auth / Function / Role / RolePermission / User / UserRole
 - 数据表 10 张：account_lock、audit_log、audit_log_item、login_attempt、password_reset、role、role_permission、sys_function、user、user_role
 - 架构：presentation / application / domain / infrastructure 四层分包（tftc.lch.security）
-- 提交史 129 次（Specifier→Architect→Tester 多角色流程 tag 可考）；测试类 6 个（git 删除史可见）
+- 提交史 129 次（Specifier→Architect→Tester 多角色流程 tag 可考）；测试类当前实存 26 个（`src/test` 计数），另有 6 个测试类在 git 删除史中可见
 
 ## 运行方式
 
@@ -51,6 +51,7 @@ application.yml 的敏感默认值已清洗（密码、密钥均为 ${ENV:} 空�
 - 最小 Vue3 管理界面：登录 + 用户管理 / 角色管理 / 功能管理 / 权限分配 / 用户角色 / 审计中心 六页
 - 技术：Vue 3 + Vite + Element Plus + axios（JWT Bearer 拦截）+ hash 路由
 - 同源部署：前端构建产物打进 Spring Boot static 目录，单 jar 同时服务页面与 API，无跨域配置
-- 改造新增接口：GET /api/v1/audit-logs 分页查询（课堂版本仅有审计写入侧，读取侧为本作品补全）
+- 改造新增接口：GET /api/v1/audit-logs 分页查询，与其余接口同样受 `@RequirePermission` 鉴权（`sys_function` 已随 `db.sql` 注册并授予超级管理员）
+- 审计写入侧补全：`AuditAspect` 在每次带权限校验的调用后落库一条真实记录（操作人 / 动作 = 权限串 / 对象类型 / IP / 结果），写失败不影响业务响应；审计中心的表格数据由此实时产生，非手工填充
 - 接口总数：原始 25 个 + 新增 1 个 = 26 个方法级接口
 - 演示账号：admin / admin；管理端未做入口的接口（密码重置、注册、删除用户）见后端完整 API

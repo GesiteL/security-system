@@ -350,3 +350,18 @@ VALUES
 (23, 1, 23, 0, 0, '2026-01-01 00:00:00', NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (24, 1, 24, 0, 0, '2026-01-01 00:00:00', NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (25, 1, 25, 0, 0, '2026-01-01 00:00:00', NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+-- ============================================================
+-- 12. 改造新增：审计日志读取（W02-sec 读取接口 / W03-sec 权限项）
+-- ============================================================
+INSERT INTO `sys_function`
+(`id`, `function_name`, `description`, `module`, `is_deleted`, `deleted_token`,
+ `plan_effective_at`, `plan_expired_at`, `created_at`, `updated_at`)
+VALUES
+(26, '查询审计日志', '分页查询审计日志（改造新增）', 'GET:/api/v1/audit-logs', 0, 0, '2026-01-01 00:00:00', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `role_permission`
+(`id`, `role_id`, `function_id`, `is_deleted`, `deleted_token`, `plan_effective_at`, `plan_expired_at`,
+ `granted_by`, `granted_at`, `created_at`, `updated_at`)
+VALUES
+(26, 1, 26, 0, 0, '2026-01-01 00:00:00', NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

@@ -1,7 +1,7 @@
 <template>
   <el-card>
     <el-alert type="info" :closable="false" style="margin-bottom:12px"
-      title="审计中心（改造新增读取侧）：审计切面当前仅写运行日志不落库，故审计表为空属预期；数据产生后此页即有内容。" />
+      title="审计中心（改造新增）：权限切面实时落库，每次带权限校验的接口调用都会记一条（操作人 / 动作 / 对象 / IP / 结果）。" />
     <el-table :data="rows" v-loading="loading" border stripe>
       <el-table-column prop="id" label="ID" width="80" />
       <el-table-column prop="operatorId" label="操作人ID" width="90" />
